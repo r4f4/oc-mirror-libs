@@ -26,3 +26,21 @@ type RelatedImage struct {
 type PackageRequired struct {
 	property.PackageRequired
 }
+
+// Implement the `nameable` interface
+
+func (p Package) GetName() string {
+	return p.Name
+}
+
+func (c Channel) GetName() string {
+	return c.Name
+}
+
+func (b Bundle) GetName() string {
+	return b.Name
+}
+
+func (r RelatedImage) GetName() string {
+	return r.Name
+}
