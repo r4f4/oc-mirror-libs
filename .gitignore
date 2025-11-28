@@ -1,0 +1,9 @@
+# Test binary, built with `go test -c`
+*.test
+
+# Output of go coverage tool
+*.out
+
+# Project-local cache
+*.swp
+.vscode
