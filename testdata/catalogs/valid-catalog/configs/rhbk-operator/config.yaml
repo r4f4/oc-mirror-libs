@@ -1,0 +1,38 @@
+name: rhbk-operator
+schema: olm.package
+defaultChannel: "stable-v26.4"
+---
+name: stable-v26
+package: rhbk-operator
+schema: olm.channel
+entries:
+  - name: "rhbk-operator.v26.0.5-opr.1"
+  - name: "rhbk-operator.v26.2.11-opr.1"
+    replaces: "rhbk-operator.v26.0.5-opr.1"
+    skips:
+      - "rhbk-operator.v26.0.5-opr.1"
+---
+name: "rhbk-operator.v26.0.5-opr.1"
+package: rhbk-operator
+schema: olm.bundle
+image: "registry.redhat.io/rhbk/keycloack-operator-bundle@sha256:deadbeef"
+properties:
+  - type: olm.gvk
+    value:
+      packageName: rhbk-operator
+      version: "26.0.5-opr.1"
+relatedImages:
+  - name: ""
+    image: "registry.redhat.io/rhbk/keycloack-operator-bundle@sha256:deadbeef"
+---
+name: "rhbk-operator.v26.2.11-opr.1"
+package: rhbk-operator
+schema: olm.bundle
+image: "registry.redhat.io/rhbk/keycloack-operator-bundle@sha256:deadbeef"
+properties:
+  - type: olm.gvk
+    value:
+      packageName: rhbk-operator
+      version: "26.2.11-opr.1"
+relatedImages:
+  - image: "registry.redhat.io/rhbk/keycloack-operator-bundle@sha256:deadbeef"

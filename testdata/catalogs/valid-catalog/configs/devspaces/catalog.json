@@ -1,0 +1,44 @@
+{
+    "schema": "olm.package",
+    "name": "devspaces",
+    "defaultChannel": "stable"
+}
+{
+    "schema": "olm.channel",
+    "name": "stable",
+    "package": "devspaces",
+    "entries": [
+        {
+            "name": "devspacesoperator.v3.10.0",
+            "replaces": "devspacesoperator.v3.9.1"
+        }
+    ]
+}
+{
+    "schema": "olm.bundle",
+    "name": "devspacesoperator.v3.10.0",
+    "package": "devspaces",
+    "image": "registry.redhat.io/devspaces/devspaces-operator-bundle@sha256:deadbeef",
+    "properties": [
+        {
+            "type": "olm.package",
+            "value": {
+                "packageName": "devspaces",
+                "version": "3.10.0"
+            }
+        },
+        {
+            "type": "olm.package.required",
+            "value": {
+                "packageName": "devworkspace-operator",
+                "versionRange": ">=0.12.0"
+            }
+        }
+    ],
+    "relatedImages": [
+        {
+            "name": "",
+            "image": "registry.redhat.io/devspaces/devspaces-operator-bundle@sha256:deadbeef"
+        }
+    ]
+}
