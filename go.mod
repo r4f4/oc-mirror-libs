@@ -4,8 +4,10 @@ go 1.25.4
 
 require (
 	github.com/Masterminds/semver/v3 v3.4.0
+	github.com/RyanCarrier/dijkstra/v2 v2.0.2
 	github.com/operator-framework/operator-registry v1.61.0
 	gotest.tools/v3 v3.5.2
+	k8s.io/apimachinery v0.34.1
 )
 
 require (
@@ -51,7 +53,6 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/api v0.34.1 // indirect
-	k8s.io/apimachinery v0.34.1 // indirect
 	k8s.io/client-go v0.34.1 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20250710124328-f3f2b991d03b // indirect
