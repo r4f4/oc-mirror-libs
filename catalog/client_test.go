@@ -10,6 +10,7 @@ import (
 	"github.com/operator-framework/operator-registry/alpha/property"
 	"gotest.tools/v3/assert"
 
+	"github.com/r4f4/oc-mirror-libs/common"
 	libErrs "github.com/r4f4/oc-mirror-libs/errors"
 )
 
@@ -66,7 +67,7 @@ func TestCatalogClientSucceeds(t *testing.T) {
 			Package(declcfg.Package{Schema: "olm.package", Name: "devspaces", DefaultChannel: "stable"}),
 			Package(declcfg.Package{Schema: "olm.package", Name: "rhbk-operator", DefaultChannel: "stable-v26.4"}),
 		}
-		slices.SortFunc(ops, CompareByName)
+		slices.SortFunc(ops, common.CompareByName)
 		assert.DeepEqual(t, ops, expected)
 	})
 
