@@ -78,7 +78,7 @@ func (l *LoadedCatalog) GetBundlesForChannel(operatorName string, channelName st
 			continue
 		}
 		if bundleNames.Has(bdl.Name) {
-			bundles = append(bundles, Bundle{bdl})
+			bundles = append(bundles, Bundle(bdl))
 		}
 	}
 	return bundles, nil
@@ -92,7 +92,7 @@ func (l *LoadedCatalog) GetChannelsForOperator(operatorName string) ([]Channel, 
 	channels := []Channel{}
 	for _, ch := range l.cfg.Channels {
 		if ch.Package == operatorName {
-			channels = append(channels, Channel{ch})
+			channels = append(channels, Channel(ch))
 		}
 	}
 	return channels, nil
@@ -113,7 +113,7 @@ func (l *LoadedCatalog) GetDependenciesForBundle(operatorName string, bundleName
 		if err := json.Unmarshal(prop.Value, &v); err != nil {
 			return nil, libErrs.NewCatalogErr(libErrs.ErrParseProperty)
 		}
-		deps = append(deps, PackageRequired{v})
+		deps = append(deps, PackageRequired(v))
 	}
 	return deps, nil
 }
@@ -122,7 +122,7 @@ func (l *LoadedCatalog) GetDependenciesForBundle(operatorName string, bundleName
 func (l *LoadedCatalog) GetOperators() ([]Package, error) {
 	pkgs := make([]Package, len(l.cfg.Packages))
 	for i, v := range l.cfg.Packages {
-		pkgs[i] = Package{v}
+		pkgs[i] = Package(v)
 	}
 	return pkgs, nil
 }
@@ -135,7 +135,7 @@ func (l *LoadedCatalog) GetRelatedImagesForBundle(operatorName string, bundleNam
 	}
 	ri := make([]RelatedImage, len(bdl.RelatedImages))
 	for i, v := range bdl.RelatedImages {
-		ri[i] = RelatedImage{v}
+		ri[i] = RelatedImage(v)
 	}
 	return ri, nil
 }

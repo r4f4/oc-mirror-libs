@@ -63,8 +63,8 @@ func TestCatalogClientSucceeds(t *testing.T) {
 		ops, err := catalog.GetOperators()
 		assert.NilError(t, err)
 		expected := []Package{
-			{declcfg.Package{Schema: "olm.package", Name: "devspaces", DefaultChannel: "stable"}},
-			{declcfg.Package{Schema: "olm.package", Name: "rhbk-operator", DefaultChannel: "stable-v26.4"}},
+			Package(declcfg.Package{Schema: "olm.package", Name: "devspaces", DefaultChannel: "stable"}),
+			Package(declcfg.Package{Schema: "olm.package", Name: "rhbk-operator", DefaultChannel: "stable-v26.4"}),
 		}
 		slices.SortFunc(ops, CompareByName)
 		assert.DeepEqual(t, ops, expected)
@@ -74,7 +74,7 @@ func TestCatalogClientSucceeds(t *testing.T) {
 		chs, err := catalog.GetChannelsForOperator("rhbk-operator")
 		assert.NilError(t, err)
 		expected := []Channel{
-			{
+			Channel(
 				declcfg.Channel{
 					Schema:  "olm.channel",
 					Name:    "stable-v26",
@@ -90,7 +90,7 @@ func TestCatalogClientSucceeds(t *testing.T) {
 						},
 					},
 				},
-			},
+			),
 		}
 		assert.DeepEqual(t, chs, expected)
 	})
@@ -99,7 +99,7 @@ func TestCatalogClientSucceeds(t *testing.T) {
 		bdls, err := catalog.GetBundlesForChannel("rhbk-operator", "stable-v26")
 		assert.NilError(t, err)
 		expected := []Bundle{
-			{
+			Bundle(
 				declcfg.Bundle{
 					Schema:  "olm.bundle",
 					Name:    "rhbk-operator.v26.0.5-opr.1",
@@ -117,8 +117,8 @@ func TestCatalogClientSucceeds(t *testing.T) {
 						},
 					},
 				},
-			},
-			{
+			),
+			Bundle(
 				declcfg.Bundle{
 					Schema:  "olm.bundle",
 					Name:    "rhbk-operator.v26.2.11-opr.1",
@@ -136,7 +136,7 @@ func TestCatalogClientSucceeds(t *testing.T) {
 						},
 					},
 				},
-			},
+			),
 		}
 		assert.DeepEqual(t, bdls, expected)
 	})
@@ -144,7 +144,7 @@ func TestCatalogClientSucceeds(t *testing.T) {
 	t.Run("getting bundle's related images", func(t *testing.T) {
 		ri, err := catalog.GetRelatedImagesForBundle("rhbk-operator", "rhbk-operator.v26.2.11-opr.1")
 		assert.NilError(t, err)
-		expected := []RelatedImage{{declcfg.RelatedImage{Image: "registry.redhat.io/rhbk/keycloack-operator-bundle@sha256:deadbeef"}}}
+		expected := []RelatedImage{RelatedImage(declcfg.RelatedImage{Image: "registry.redhat.io/rhbk/keycloack-operator-bundle@sha256:deadbeef"})}
 		assert.DeepEqual(t, ri, expected)
 	})
 
@@ -152,7 +152,7 @@ func TestCatalogClientSucceeds(t *testing.T) {
 		deps, err := catalog.GetDependenciesForBundle("devspaces", "devspacesoperator.v3.10.0")
 		assert.NilError(t, err)
 		expected := []PackageRequired{
-			{property.PackageRequired{PackageName: "devworkspace-operator", VersionRange: ">=0.12.0"}},
+			PackageRequired(property.PackageRequired{PackageName: "devworkspace-operator", VersionRange: ">=0.12.0"}),
 		}
 		assert.DeepEqual(t, deps, expected)
 	})

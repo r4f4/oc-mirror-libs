@@ -6,26 +6,13 @@ import (
 )
 
 // Wrappers around alpha/declcfg types.
-
-type Package struct {
-	declcfg.Package
-}
-
-type Channel struct {
-	declcfg.Channel
-}
-
-type Bundle struct {
-	declcfg.Bundle
-}
-
-type RelatedImage struct {
-	declcfg.RelatedImage
-}
-
-type PackageRequired struct {
-	property.PackageRequired
-}
+type (
+	Package         declcfg.Package
+	Channel         declcfg.Channel
+	Bundle          declcfg.Bundle
+	RelatedImage    declcfg.RelatedImage
+	PackageRequired property.PackageRequired
+)
 
 // Implement the `nameable` interface
 
