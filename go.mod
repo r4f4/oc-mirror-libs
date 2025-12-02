@@ -3,6 +3,7 @@ module github.com/r4f4/oc-mirror-libs
 go 1.25.4
 
 require (
+	github.com/Masterminds/semver/v3 v3.4.0
 	github.com/operator-framework/operator-registry v1.61.0
 	gotest.tools/v3 v3.5.2
 )
