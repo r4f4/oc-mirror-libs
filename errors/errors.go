@@ -19,6 +19,8 @@ var (
 	// Catalog errors
 	ErrCantLoad      = errors.New("cannot load catalog")
 	ErrParseProperty = errors.New("cannot parse property")
+	ErrDownload      = errors.New("cannot download catalog")
+	ErrExtract       = errors.New("cannot extract configs")
 
 	// Release errors
 	ErrParseURL       = errors.New("parse url")
