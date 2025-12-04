@@ -11,6 +11,7 @@ import (
 	"github.com/operator-framework/operator-registry/alpha/property"
 	"k8s.io/apimachinery/pkg/util/sets"
 
+	"github.com/r4f4/oc-mirror-libs/common"
 	libErrs "github.com/r4f4/oc-mirror-libs/errors"
 )
 
@@ -120,11 +121,7 @@ func (l *LoadedCatalog) GetDependenciesForBundle(operatorName string, bundleName
 
 // GetOperators implements CatalogIntrospector.
 func (l *LoadedCatalog) GetOperators() ([]Package, error) {
-	pkgs := make([]Package, len(l.cfg.Packages))
-	for i, v := range l.cfg.Packages {
-		pkgs[i] = Package(v)
-	}
-	return pkgs, nil
+	return common.Map(l.cfg.Packages, func(v declcfg.Package) Package { return Package(v) }), nil
 }
 
 // GetRelatedImagesForBundle implements CatalogIntrospector.
@@ -133,9 +130,5 @@ func (l *LoadedCatalog) GetRelatedImagesForBundle(operatorName string, bundleNam
 	if err != nil {
 		return nil, err
 	}
-	ri := make([]RelatedImage, len(bdl.RelatedImages))
-	for i, v := range bdl.RelatedImages {
-		ri[i] = RelatedImage(v)
-	}
-	return ri, nil
+	return common.Map(bdl.RelatedImages, func(v declcfg.RelatedImage) RelatedImage { return RelatedImage(v) }), nil
 }
