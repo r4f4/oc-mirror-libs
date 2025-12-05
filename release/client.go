@@ -3,6 +3,7 @@ package release
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"slices"
 
 	"github.com/Masterminds/semver/v3"
@@ -11,6 +12,8 @@ import (
 	libErrs "github.com/r4f4/oc-mirror-libs/errors"
 	"k8s.io/apimachinery/pkg/util/sets"
 )
+
+var logger = slog.Default().WithGroup("release")
 
 var _ ReleaseIntrospector = (*ReleaseClient)(nil)
 
@@ -108,6 +111,7 @@ func (c *ReleaseClient) buildGraph() (*dijkstra.MappedGraph[string], error) {
 	for _, gdata := range c.data {
 		for _, node := range gdata.Nodes {
 			if err := graph.AddEmptyVertex(node.Version); err != nil {
+				logger.Debug("node already in graph", slog.String("node", node.Version))
 				if !errors.Is(err, dijkstra.ErrVertexAlreadyExists) {
 					return nil, err
 				}

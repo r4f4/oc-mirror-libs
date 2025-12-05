@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 
@@ -44,6 +45,7 @@ func DownloadGraphData(ctx context.Context, options DownloadOptions) ([]byte, er
 	query.Set("arch", string(options.Arch))
 	parsed.RawQuery = query.Encode()
 
+	logger.Debug("download graph data", slog.String("GET", parsed.String()))
 	req, err := http.NewRequestWithContext(ctx, "GET", parsed.String(), nil)
 	if err != nil {
 		return nil, libErrs.NewReleaseErr(err)
@@ -52,6 +54,7 @@ func DownloadGraphData(ctx context.Context, options DownloadOptions) ([]byte, er
 
 	client := options.Client
 	if client == nil {
+		logger.Debug("initializing default http client")
 		client = &http.Client{}
 	}
 	resp, err := client.Do(req)

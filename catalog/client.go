@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"os"
 	"slices"
 
@@ -14,6 +15,8 @@ import (
 	"github.com/r4f4/oc-mirror-libs/common"
 	libErrs "github.com/r4f4/oc-mirror-libs/errors"
 )
+
+var logger = slog.Default().WithGroup("catalog")
 
 var _ CatalogIntrospector = (*LoadedCatalog)(nil)
 
@@ -73,6 +76,9 @@ func (l *LoadedCatalog) GetBundlesForChannel(operatorName string, channelName st
 	for _, entry := range ch.Entries {
 		bundleNames.Insert(entry.Name)
 	}
+	lg := logger.With(slog.String("channel", channelName))
+	lg.Debug("get bundles", slog.Int("unique names", bundleNames.Len()))
+	foundBundles := sets.New[string]()
 	bundles := make([]Bundle, 0, bundleNames.Len())
 	for _, bdl := range l.cfg.Bundles {
 		if bdl.Package != operatorName {
@@ -80,7 +86,12 @@ func (l *LoadedCatalog) GetBundlesForChannel(operatorName string, channelName st
 		}
 		if bundleNames.Has(bdl.Name) {
 			bundles = append(bundles, Bundle(bdl))
+			foundBundles.Insert(bdl.Name)
 		}
+	}
+	if diff := bundleNames.Len() - foundBundles.Len(); diff > 0 {
+		lg.Warn("get bundles", slog.Int("missing", diff))
+		lg.Debug("get bundles", slog.Any("not found", bundleNames.UnsortedList()))
 	}
 	return bundles, nil
 }
@@ -108,6 +119,7 @@ func (l *LoadedCatalog) GetDependenciesForBundle(operatorName string, bundleName
 	deps := make([]PackageRequired, 0, len(bdl.Properties))
 	for _, prop := range bdl.Properties {
 		if prop.Type != property.TypePackageRequired {
+			logger.Debug("get dependencies", slog.String("skip property", prop.Type))
 			continue
 		}
 		var v property.PackageRequired
