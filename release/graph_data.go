@@ -9,14 +9,25 @@ import (
 )
 
 type graphData struct {
-	Nodes []node  `json:"nodes"`
-	Edges [][]int `json:"edges"`
+	Nodes     []node     `json:"nodes"`
+	Edges     [][]int    `json:"edges"`
+	CondEdges []condEdge `json:"conditionalEdges"`
 }
 
 type node struct {
 	Version  string            `json:"version"`
 	Payload  string            `json:"payload"`
 	Metadata map[string]string `json:"metadata"`
+}
+
+type condEdge struct {
+	Edges []edge `json:"edges"`
+	Risks []Risk `json:"risks"`
+}
+
+type edge struct {
+	From string `json:"from"`
+	To   string `json:"to"`
 }
 
 func parseGraphData(data []byte) (*graphData, error) {
@@ -53,4 +64,55 @@ func (o *graphData) nodesTo(node int) []int {
 		}
 	}
 	return nodes
+}
+
+func (o *graphData) conditionalEdgesFrom(node int) []condEdge {
+	version := o.Nodes[node].Version
+	condEdges := []condEdge{}
+	for _, ce := range o.CondEdges {
+		edges := []edge{}
+		for _, e := range ce.Edges {
+			if e.From != version {
+				continue
+			}
+			edges = append(edges, e)
+		}
+		if len(edges) > 0 {
+			condEdges = append(condEdges, condEdge{Edges: edges, Risks: ce.Risks})
+		}
+	}
+	return condEdges
+}
+
+func (o *graphData) conditionalEdgesTo(node int) []condEdge {
+	version := o.Nodes[node].Version
+	condEdges := []condEdge{}
+	for _, ce := range o.CondEdges {
+		edges := []edge{}
+		for _, e := range ce.Edges {
+			if e.To != version {
+				continue
+			}
+			edges = append(edges, e)
+		}
+		if len(edges) > 0 {
+			condEdges = append(condEdges, condEdge{Edges: edges, Risks: ce.Risks})
+		}
+	}
+	return condEdges
+}
+
+func (o *graphData) getRisks(from string, to string) ([]Risk, error) {
+	risks := []Risk{}
+	for _, ce := range o.CondEdges {
+		for _, e := range ce.Edges {
+			if e.From == from && e.To == to {
+				risks = append(risks, ce.Risks...)
+			}
+		}
+	}
+	if len(risks) == 0 {
+		return nil, libErrs.NewReleaseErr(fmt.Errorf("conditional edge %w", libErrs.ErrNotFound))
+	}
+	return risks, nil
 }

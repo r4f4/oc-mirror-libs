@@ -32,6 +32,17 @@ func equalVersions(s []*semver.Version, t []string) cmp.Comparison {
 	}
 }
 
+func oneOfVersion(s *semver.Version, t []string) cmp.Comparison {
+	return func() cmp.Result {
+		for _, v := range t {
+			if s.Equal(semver.MustParse(v)) {
+				return cmp.ResultSuccess
+			}
+		}
+		return cmp.ResultFailure(fmt.Sprintf("%s not in target values", s.String()))
+	}
+}
+
 func TestReleaseClient(t *testing.T) {
 	data, err := os.ReadFile(valid419GraphData)
 	assert.NilError(t, err)
@@ -90,6 +101,26 @@ func TestReleaseClient(t *testing.T) {
 			assert.NilError(t, err)
 			assert.Equal(t, len(path), 4, "unexpected number of updates")
 			assert.Assert(t, equalVersions(path, []string{"4.19.13", "4.19.17", "4.20.0", "4.20.2"}))
+		})
+
+		t.Run("getting upgrades across channels with conditional edges", func(t *testing.T) {
+			data2, err := os.ReadFile(valid420GraphData)
+			assert.NilError(t, err)
+			srcVer := semver.MustParse("4.19.11")
+			tgtVer := semver.MustParse("4.20.2")
+			client2, err := NewReleaseClient(data, data2)
+			assert.NilError(t, err)
+			path, err := client2.GetUpdatePathWithRisks(srcVer, tgtVer)
+			fmt.Printf("path: %+v", path)
+			assert.NilError(t, err)
+			assert.Equal(t, len(path), 3, "unexpected number of updates")
+			assert.Assert(t, oneOfVersion(path[1], []string{"4.19.15", "4.19.16", "4.19.17"}))
+			risks, err := client2.GetRisks(srcVer, path[1])
+			assert.NilError(t, err)
+			assert.Equal(t, len(risks), 2, "unexpected number of risks")
+			risks, err = client2.GetRisks(path[1], tgtVer)
+			assert.NilError(t, err)
+			assert.Equal(t, len(risks), 1, "unexpected number of risks")
 		})
 	})
 
